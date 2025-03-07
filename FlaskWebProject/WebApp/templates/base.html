@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <!-- Menu bar -->
+    <div>
+        <a href="/index"> Home</a>
+        <a href="/login"> Login</a>
+    </div>
+    <!-- User -->
+    {% block user %}
+    <h3>user block</h3>
+    {% endblock %}
+
+    <!-- Content -->
+    {% block content %}
+    <h3>content block</h3>
+    {% endblock %}
+
+    <!-- Footer -->
+    {% include 'footer.html' %}
+
+</body>
+</html>

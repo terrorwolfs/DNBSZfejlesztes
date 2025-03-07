@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <h2>Manage Rooms</h2>
+    <ul>
+        {% for room in rooms %}
+        <li>
+            {{ room.room_number }} - {{ room.room_type }} - ${{ room.price_per_night }}
+            {% if room.is_available %}
+            Available
+            {% else %}
+            Not Available
+            {% endif %}
+            <a href="{{ url_for('edit_room', room_id=room.id) }}">Edit</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('add_room') }}">Add New Room</a>
+</body>
+</html>

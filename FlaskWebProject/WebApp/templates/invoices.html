@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoices</title>
+</head>
+<body>
+    <h1>Invoices</h1>
+    <ul>
+        {% for invoice in invoices %}
+        <li>Invoice ID: {{ invoice.id }} - Booking ID: {{ invoice.booking_id }} - Total Amount: ${{ invoice.total_amount }} - Paid: {{ invoice.is_paid }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
