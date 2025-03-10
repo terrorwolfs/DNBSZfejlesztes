@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from WebApp.models import User
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, InputRequired
+from .models import User
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -25,3 +25,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+class BookingForm(FlaskForm):
+    start_date = DateField('Start Date', validators=[InputRequired()])
+    end_date = DateField('End Date', validators=[InputRequired()])
+    submit = SubmitField('Book Now')

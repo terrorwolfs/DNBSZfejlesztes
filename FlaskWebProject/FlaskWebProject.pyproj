@@ -43,6 +43,7 @@
     <Folder Include="WebApp\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="requirements.txt" />
     <Content Include="WebApp\templates\account.html" />
     <Content Include="WebApp\templates\admin.html" />
     <Content Include="WebApp\templates\base.html" />
@@ -60,8 +61,8 @@
   <ItemGroup>
     <Interpreter Include="env\">
       <Id>env</Id>
-      <Version>3.11</Version>
-      <Description>env (Python 3.11 (64-bit))</Description>
+      <Version>0.0</Version>
+      <Description>env (Python 3.12 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
