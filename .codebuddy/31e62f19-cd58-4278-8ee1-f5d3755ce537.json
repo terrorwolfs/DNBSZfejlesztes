@@ -1,0 +1,1 @@
+{"chunk":4,"numChunks":5,"fileHash":"+KchaeIwYh/Iq5M+WZ7mtoJto9XjgI72GEa+522FkUQ=","filePath":"FlaskWebProject/migrations/versions/initial_migration.py","content":"(length=100)),\n        sa.PrimaryKeyConstraint('id')\n    )"}
