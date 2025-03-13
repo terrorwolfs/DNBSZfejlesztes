@@ -1,24 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HotelGuru</title>
-</head>
-<body>
-    <h1>Welcome to HotelGuru</h1>
-    <h2>Available Rooms</h2>
-    <ul>
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1 class="text-center mb-4">Welcome to HotelGuru</h1>
+        <div class="row">
         {% for room in rooms %}
-        <li>
-            {{ room.room_number }} - {{ room.room_type }} - ${{ room.price_per_night }}
-            {% if room.is_available %}
-            <a href="{{ url_for('book_room', room_id=room.id) }}">Book Now</a>
-            {% else %}
-            Not Available
-            {% endif %}
-        </li>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Room {{ room.room_number }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ room.room_type }}</h6>
+                        <p class="card-text">
+                            <strong>Price:</strong> ${{ room.price_per_night }}/night<br>
+                            <strong>Capacity:</strong> {{ room.capacity }} persons
+                        </p>
+                        {% if room.is_available %}
+                            <a href="{{ url_for('routes.book_room', room_id=room.id) }}" 
+                               class="btn btn-primary">Book Now</a>
+                        {% else %}
+                            <button class="btn btn-secondary" disabled>Not Available</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
-</body>
-</html>
+        </div>
+    </div>
+{% endblock %}

@@ -1,28 +1,54 @@
 <!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HotelGuru{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .navbar { padding: 1rem 2rem; }
+        .container { margin-top: 2rem; }
+        .footer { margin-top: 3rem; padding: 2rem; background-color: #f8f9fa; }
+        .alert { margin: 1rem 0; }
+    </style>
 </head>
 <body>
-    <!-- Menu bar -->
-    <div>
-        <a href="/index"> Home</a>
-        <a href="/login"> Login</a>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="{{ url_for('routes.index') }}">HotelGuru</a>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('routes.index') }}">Home</a>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('routes.account') }}"><i class="fas fa-user"></i> Account</a>
+                {% if session.get('is_admin') %}
+                    <a href="{{ url_for('routes.admin') }}"><i class="fas fa-cog"></i> Admin</a>
+                {% endif %}
+                <a href="{{ url_for('routes.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            {% else %}
+                <a href="{{ url_for('routes.login') }}">Login</a>
+                <a href="{{ url_for('routes.register') }}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
     </div>
-    <!-- User -->
-    {% block user %}
-    <h3>user block</h3>
-    {% endblock %}
 
-    <!-- Content -->
-    {% block content %}
-    <h3>content block</h3>
-    {% endblock %}
-
-    <!-- Footer -->
-    {% include 'footer.html' %}
-
+    <footer class="footer">
+        <p>&copy; 2024 HotelGuru. All rights reserved.</p>
+    </footer>
 </body>
 </html>
