@@ -1,0 +1,1 @@
+{"chunk":0,"numChunks":1,"fileHash":"cXpVZRT7Zb8HjB5mPdooE6j8E2043hTuZqw0J4xU81Q=","filePath":"FlaskWebProject/WebApp/templates/register.html","content":"{% extends \"base.html\" %}\n{% block title %}Register{% endblock %}\n{% block content %}"}

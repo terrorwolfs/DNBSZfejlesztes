@@ -1,6 +1,7 @@
 from WebApp import create_app, db
-from WebApp.models import User, Room, Booking
+from WebApp.models import User, Room, Booking, ExtraService, Maintenance, Invoice
 from werkzeug.security import generate_password_hash
+from datetime import datetime, timedelta
 
 def init_db():
     app = create_app()
@@ -8,26 +9,50 @@ def init_db():
         # Create all tables
         db.create_all()
 
-        # Add admin user
+        # Create admin user
         admin = User(
             username='admin',
-            email='admin@example.com',
+            email='admin@hotel.com',
             password=generate_password_hash('admin123'),
-            is_admin=True
+            role='ADMIN',
+            phone='1234567890',
+            address='Hotel Address'
         )
 
-        # Add sample rooms
+        # Create sample rooms
         rooms = [
-            Room(room_number='101', room_type='Single', price_per_night=100.0, capacity=1),
-            Room(room_number='102', room_type='Double', price_per_night=150.0, capacity=2),
-            Room(room_number='103', room_type='Suite', price_per_night=250.0, capacity=4)
+            Room(
+                room_number=101,
+                room_type='Standard',
+                capacity=2,
+                price_per_night=100.0,
+                description='Comfortable standard room',
+                amenities={'wifi': True, 'tv': True, 'minibar': False},
+                floor=1
+            ),
+            Room(
+                room_number=201,
+                room_type='Deluxe',
+                capacity=3,
+                price_per_night=150.0,
+                description='Spacious deluxe room',
+                amenities={'wifi': True, 'tv': True, 'minibar': True},
+                floor=2
+            ),
+            Room(
+                room_number=301,
+                room_type='Suite',
+                capacity=4,
+                price_per_night=250.0,
+                description='Luxury suite',
+                amenities={'wifi': True, 'tv': True, 'minibar': True, 'jacuzzi': True},
+                floor=3
+            )
         ]
 
-        # Add to session and commit
+        # Add sample data to database
         db.session.add(admin)
-        for room in rooms:
-            db.session.add(room)
-        
+        db.session.add_all(rooms)
         db.session.commit()
 
 if __name__ == '__main__':
