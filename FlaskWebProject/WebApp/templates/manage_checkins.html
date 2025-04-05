@@ -1,0 +1,152 @@
+<div class="container">
+    <h1 class="text-center mb-4">Check-in Management</h1>
+    
+    <ul class="nav nav-tabs mb-4" id="checkinTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" href="#pending" role="tab">Pending Check-ins</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="active-tab" data-bs-toggle="tab" href="#active" role="tab">Active Check-ins</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="completed-tab" data-bs-toggle="tab" href="#completed" role="tab">Recent Check-outs</a>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="checkinTabsContent">
+        <!-- Pending Check-ins Tab -->
+        <div class="tab-pane fade show active" id="pending" role="tabpanel">
+            <h3>Pending Check-ins</h3>
+            {% if pending_checkins %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Guest</th>
+                            <th>Room</th>
+                            <th>Check-in Date</th>
+                            <th>Check-out Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in pending_checkins %}
+                        <tr>
+                            <td>{{ booking.id }}</td>
+                            <td>{{ booking.customer.username }}</td>
+                            <td>{{ booking.room.room_number }}</td>
+                            <td>{{ booking.start_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ booking.end_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="{{ url_for('routes.checkin_guest', booking_id=booking.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Check-in
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                No pending check-ins at this time.
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Active Check-ins Tab -->
+        <div class="tab-pane fade" id="active" role="tabpanel">
+            <h3>Active Check-ins</h3>
+            {% if active_checkins %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Check-in ID</th>
+                            <th>Guest</th>
+                            <th>Room</th>
+                            <th>Check-in Time</th>
+                            <th>Expected Check-out</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for checkin in active_checkins %}
+                        <tr>
+                            <td>{{ checkin.id }}</td>
+                            <td>{{ checkin.guest.username }}</td>
+                            <td>{{ checkin.booking.room.room_number }}</td>
+                            <td>{{ checkin.check_in_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ checkin.booking.end_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <a href="{{ url_for('routes.checkout_guest', checkin_id=checkin.id) }}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-sign-out-alt"></i> Check-out
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                No active check-ins at this time.
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Completed Check-ins Tab -->
+        <div class="tab-pane fade" id="completed" role="tabpanel">
+            <h3>Recent Check-outs</h3>
+            {% if completed_checkins %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Check-in ID</th>
+                            <th>Guest</th>
+                            <th>Room</th>
+                            <th>Check-in Time</th>
+                            <th>Check-out Time</th>
+                            <th>Invoice</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for checkin in completed_checkins %}
+                        <tr>
+                            <td>{{ checkin.id }}</td>
+                            <td>{{ checkin.guest.username }}</td>
+                            <td>{{ checkin.booking.room.room_number }}</td>
+                            <td>{{ checkin.check_in_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ checkin.check_out_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                {% if checkin.booking.invoice %}
+                                <a href="{{ url_for('routes.view_invoice', invoice_id=checkin.booking.invoice.id) }}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-file-invoice-dollar"></i> View Invoice
+                                </a>
+                                {% else %}
+                                <a href="{{ url_for('routes.create_invoice', booking_id=checkin.booking.id) }}" class="btn btn-sm btn-outline-secondary">
+                                    Create Invoice
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                No recent check-outs.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{ url_for('routes.admin') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Admin Panel
+        </a>
+    </div>
+</div>

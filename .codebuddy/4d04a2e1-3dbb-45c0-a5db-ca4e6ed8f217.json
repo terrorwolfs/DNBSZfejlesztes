@@ -1,1 +1,0 @@
-{"chunk":0,"numChunks":1,"fileHash":"pcNZZhd0gPypBX/ItJhPqKKVnKJFG+0oJnCpXNds+D0=","filePath":"FlaskWebProject/app.py","content":"from WebApp import create_app\n\napp = create_app()\n\nif __name__ == \"__main__\":\n    app.run(debug=True)\n"}

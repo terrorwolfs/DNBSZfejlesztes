@@ -19,14 +19,14 @@
                             {{ form.hidden_tag() }}
                             <div class="mb-3">
                                 {{ form.start_date.label(class="form-label") }}
-                                {{ form.start_date(class="form-control") }}
+                                {{ form.start_date(class="form-control", type="date") }}
                                 {% for error in form.start_date.errors %}
                                     <span class="text-danger">{{ error }}</span>
                                 {% endfor %}
                             </div>
                             <div class="mb-3">
                                 {{ form.end_date.label(class="form-label") }}
-                                {{ form.end_date(class="form-control") }}
+                                {{ form.end_date(class="form-control", type="date") }}
                                 {% for error in form.end_date.errors %}
                                     <span class="text-danger">{{ error }}</span>
                                 {% endfor %}

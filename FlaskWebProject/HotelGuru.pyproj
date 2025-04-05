@@ -1,0 +1,131 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>b1ee8961-754d-4fb7-9336-f4d3f30c0761</ProjectGuid>
+    <ProjectHome>
+    </ProjectHome>
+    <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <StartupFile>WebApp\app.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <LaunchProvider>Web launcher</LaunchProvider>
+    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <OutputPath>.</OutputPath>
+    <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
+    <Name>HotelGuru</Name>
+    <RootNamespace>FlaskWebProject</RootNamespace>
+    <WebBrowserPort>5555</WebBrowserPort>
+    <InterpreterId>MSBuild|env3|$(MSBuildProjectFullPath)</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="app.py" />
+    <Compile Include="setup_db.py" />
+    <Compile Include="run.py" />
+    <Compile Include="WebApp\__init__.py" />
+    <Compile Include="WebApp\auth.py" />
+    <Compile Include="WebApp\forms.py" />
+    <Compile Include="WebApp\models.py" />
+    <Compile Include="WebApp\routes.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WebApp\" />
+    <Folder Include="WebApp\templates\" />
+    <Folder Include="instance\" />
+    <Folder Include="migrations\" />
+    <Folder Include="logs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="requirements.txt" />
+    <Content Include="WebApp\templates\account.html" />
+    <Content Include="WebApp\templates\admin.html" />
+    <Content Include="WebApp\templates\base.html" />
+    <Content Include="WebApp\templates\booking.html" />
+    <Content Include="WebApp\templates\booking_detail.html" />
+    <Content Include="WebApp\templates\checkin.html" />
+    <Content Include="WebApp\templates\checkin_form.html" />
+    <Content Include="WebApp\templates\checkin_list.html" />
+    <Content Include="WebApp\templates\checkout.html" />
+    <Content Include="WebApp\templates\checkout_form.html" />
+    <Content Include="WebApp\templates\create_invoice.html" />
+    <Content Include="WebApp\templates\edit_booking.html" />
+    <Content Include="WebApp\templates\extra_services.html" />
+    <Content Include="WebApp\templates\footer.html" />
+    <Content Include="WebApp\templates\index.html" />
+    <Content Include="WebApp\templates\invoice.html" />
+    <Content Include="WebApp\templates\invoices.html" />
+    <Content Include="WebApp\templates\login.html" />
+    <Content Include="WebApp\templates\manage_booking.html" />
+    <Content Include="WebApp\templates\manage_bookings.html" />
+    <Content Include="WebApp\templates\manage_checkins.html" />
+    <Content Include="WebApp\templates\manage_invoices.html" />
+    <Content Include="WebApp\templates\manage_rooms.html" />
+    <Content Include="WebApp\templates\register.html" />
+    <Content Include="WebApp\templates\request_service.html" />
+    <Content Include="WebApp\templates\room_detail.html" />
+    <Content Include="WebApp\templates\room_form.html" />
+    <Content Include="WebApp\templates\room_status.html" />
+    <Content Include="WebApp\templates\rooms.html" />
+    <Content Include="WebApp\templates\users.html" />
+    <Content Include="WebApp\templates\view_invoice.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Interpreter Include="env3\">
+      <Id>env3</Id>
+      <Version>3.11</Version>
+      <Description>env3 (Python 3.11 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <AutoAssignPort>True</AutoAssignPort>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://localhost</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}" User="">
+        <WebProjectProperties>
+          <StartPageUrl>
+          </StartPageUrl>
+          <StartAction>CurrentPage</StartAction>
+          <AspNetDebugging>True</AspNetDebugging>
+          <SilverlightDebugging>False</SilverlightDebugging>
+          <NativeDebugging>False</NativeDebugging>
+          <SQLDebugging>False</SQLDebugging>
+          <ExternalProgram>
+          </ExternalProgram>
+          <StartExternalURL>
+          </StartExternalURL>
+          <StartCmdLineArguments>
+          </StartCmdLineArguments>
+          <StartWorkingDirectory>
+          </StartWorkingDirectory>
+          <EnableENC>False</EnableENC>
+          <AlwaysStartWebServerOnDebug>False</AlwaysStartWebServerOnDebug>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

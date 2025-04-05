@@ -1,1 +1,0 @@
-{"chunk":1,"numChunks":5,"fileHash":"+KchaeIwYh/Iq5M+WZ7mtoJto9XjgI72GEa+522FkUQ=","filePath":"FlaskWebProject/migrations/versions/initial_migration.py","content":"\"\"\"initial migration\ndef upgrade():\n    # Create enum type for user roles"}

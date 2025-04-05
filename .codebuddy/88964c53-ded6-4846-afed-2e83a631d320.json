@@ -1,1 +1,0 @@
-{"chunk":0,"numChunks":1,"fileHash":"axjboz2Tv5F2U5fJdj8HYceq55gg56gUujtoJIo7L8g=","filePath":"FlaskWebProject/instance/your-database.db","content":"# Delete existing database files\nrm /FlaskWebProject/instance/site.db\nrm /FlaskWebProject/instance/your-database.db\n\n# Modify the config.py to ensure correct database path\n/FlaskWebProject/config.py\n"}

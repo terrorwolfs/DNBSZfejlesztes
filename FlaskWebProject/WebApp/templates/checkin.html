@@ -3,22 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check-In</title>
+    <title>Guest Check-In</title>
 </head>
 <body>
-    <h1>Check-In</h1>
-    <form method="POST" action="{{ url_for('checkin', booking_id=booking.id) }}">
-        <div>
-            <label for="guest_name">Guest Name:</label>
-            <input type="text" id="guest_name" name="guest_name" value="{{ booking.guest.username }}" readonly>
+    <div class="container">
+        <h1 class="mb-4">Guest Check-In</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Booking Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>Guest:</strong> {{ booking.customer.username }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Email:</strong> {{ booking.customer.email }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Room:</strong> {{ booking.room.room_number }} ({{ booking.room.room_type }})
+                        </div>
+                        <div class="mb-3">
+                            <strong>Check-in:</strong> {{ booking.start_date.strftime('%Y-%m-%d') }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Check-out:</strong> {{ booking.end_date.strftime('%Y-%m-%d') }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Nights:</strong> {{ booking.calculate_nights(booking.start_date, booking.end_date) }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Total Price:</strong> ${{ booking.total_price }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Check-In Form</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="">
+                            {{ form.hidden_tag() }}
+                            <div class="mb-3 form-check">
+                                {{ form.id_verified(class="form-check-input") }}
+                                {{ form.id_verified.label(class="form-check-label") }}
+                                <div class="form-text">Confirm guest's identity has been verified</div>
+                            </div>
+                            <div class="mb-3 form-check">
+                                {{ form.room_key_issued(class="form-check-input") }}
+                                {{ form.room_key_issued.label(class="form-check-label") }}
+                                <div class="form-text">Confirm room key has been provided to guest</div>
+                            </div>
+                            <div class="mb-3">
+                                {{ form.payment_method.label(class="form-label") }}
+                                {{ form.payment_method(class="form-select") }}
+                                <div class="form-text">Payment method for incidentals</div>
+                            </div>
+                            <div class="mb-3">
+                                {{ form.special_requests.label(class="form-label") }}
+                                {{ form.special_requests(class="form-control", rows=3) }}
+                                <div class="form-text">Any special requests or notes for this stay</div>
+                            </div>
+                            <div class="d-grid">
+                                {{ form.submit(class="btn btn-success") }}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <label for="room_number">Room Number:</label>
-            <input type="text" id="room_number" name="room_number" value="{{ booking.room.room_number }}" readonly>
+        
+        <div class="mt-4">
+            <a href="{{ url_for('routes.manage_checkins') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Check-In List
+            </a>
         </div>
-        <div>
-            <button type="submit">Check-In</button>
-        </div>
-    </form>
+    </div>
 </body>
 </html>

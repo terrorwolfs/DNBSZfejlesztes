@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Check-out Guest{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Check-out Guest</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Stay Details</h5>
+                        <p>
+                            <strong>Guest:</strong> {{ checkin.guest.username }}<br>
+                            <strong>Room:</strong> {{ checkin.booking.room.room_number }}<br>
+                            <strong>Check-in Time:</strong> {{ checkin.check_in_time.strftime('%Y-%m-%d %H:%M') }}<br>
+                            <strong>Expected Check-out:</strong> {{ checkin.booking.end_date.strftime('%Y-%m-%d') }}
+                        </p>
+                    </div>
+                    
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.check_out_time.label(class="form-label") }}
+                            {{ form.check_out_time(class="form-control") }}
+                            {% for error in form.check_out_time.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.room_condition.label(class="form-label") }}
+                            {{ form.room_condition(class="form-select") }}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form.key_returned(class="form-check-input") }}
+                            {{ form.key_returned.label(class="form-check-label") }}
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('routes.manage_checkins') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
