@@ -1,11 +1,15 @@
 import os
 import pathlib
-from WebApp import create_app, db
+import sys
+from WebApp import create_app, db, login_manager
 from WebApp.models import User, Room, Booking, ExtraService, CheckIn, Invoice
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
 
 def init_db():
+    # Set environment variable to indicate we're initializing the database
+    os.environ['FLASK_INITIALIZING'] = 'true'
+    
     """Initialize the database with sample data"""
     print("Initializing database...")
     
@@ -15,6 +19,14 @@ def init_db():
     
     app = create_app()
     
+    # Check if database file exists and warn user
+    db_path = os.path.join(app.instance_path, 'site.db')
+    if os.path.exists(db_path):
+        print(f"Warning: Database already exists at {db_path}")
+        print("This will overwrite your existing database. Press Ctrl+C to cancel or Enter to continue...")
+        input()
+    
+    # Create database tables and seed with initial data
     with app.app_context():
         # Create all tables
         db.create_all()
@@ -73,6 +85,13 @@ def init_db():
             print("Database seeded successfully!")
         else:
             print("Database already contains data, skipping seed.")
+    
+    # Unset initialization flag
+    os.environ.pop('FLASK_INITIALIZING', None)
+    
+    print("\nDatabase initialization complete!")
+    print("You can now run the application with: python run.py")
+    return 0
 
 if __name__ == '__main__':
-    init_db()
+    sys.exit(init_db())

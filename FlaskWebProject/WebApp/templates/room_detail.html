@@ -63,24 +63,46 @@
     </div>
 </div>
 
-{% if maps_api_key %}
+<div id="map-error" class="alert alert-warning mt-3" style="display: none;">
+    <strong>Note:</strong> The map could not be loaded. Please try again later.
+</div>
+
 <script>
+    let mapInitialized = false;
+    
     function initMap() {
-        // Hotel coordinates (example: New York City)
-        const hotelLocation = { lat: 40.7128, lng: -74.0060 };
-        
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: hotelLocation,
-        });
-        
-        const marker = new google.maps.Marker({
-            position: hotelLocation,
-            map: map,
-            title: "HotelGuru"
-        });
+        try {
+            // Hotel coordinates (example: New York City)
+            const hotelLocation = { lat: 40.7128, lng: -74.0060 };
+            
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: hotelLocation,
+            });
+            
+            const marker = new google.maps.Marker({
+                position: hotelLocation,
+                map: map,
+                title: "HotelGuru"
+            });
+            
+            mapInitialized = true;
+        } catch (e) {
+            console.error("Error initializing map:", e);
+            document.getElementById("map-error").style.display = "block";
+        }
+    }
+    
+    function handleMapError() {
+        if (!mapInitialized) {
+            console.error("Google Maps failed to load");
+            document.getElementById("map-error").style.display = "block";
+        }
     }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ maps_api_key }}&callback=initMap&v=weekly" defer></script>
+{% if maps_api_key %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ maps_api_key }}&callback=initMap&v=weekly" defer onerror="handleMapError()"></script>
+{% else %}
+<script>document.getElementById("map-error").style.display = "block";</script>
 {% endif %}
 {% endblock %}

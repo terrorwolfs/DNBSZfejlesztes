@@ -1,16 +1,7 @@
 from datetime import datetime
-from flask_login import UserMixin
-from flask import current_app
-from . import db, login_manager
+from flask_login import UserMixin, current_user
+from WebApp import db
 import uuid
-
-# Fix circular import issues
-from flask import current_app
-from sqlalchemy.ext.declarative import declarative_base
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,22 +31,25 @@ class Room(db.Model):
     status = db.Column(db.String(20), default='Available')  # Available, Maintenance, Cleaning
     amenities = db.Column(db.String(255), nullable=True)
     image_url = db.Column(db.String(255), nullable=True, default='default_room.jpg')
-    is_available = db.Column(db.Boolean, default=True)
+    is_available_flag = db.Column(db.Boolean, default=True)
+
+    def __init__(self, **kwargs):
+        super(Room, self).__init__(**kwargs)
 
     def is_available(self, start_date, end_date):
         """Check if room is available for the given date range"""
         # First check if room is marked as available
-        if not self.is_available:
+        if not self.is_available_flag:
             return False
         overlapping_bookings = Booking.query.filter(
             Booking.room_id == self.id,
-            Booking.status.in_(['Pending', 'Confirmed']),
+            Booking.status.in_(['Pending', 'Confirmed', 'Active']),
             Booking.start_date < end_date, Booking.end_date > start_date).count()
         return overlapping_bookings == 0
 
     def current_status(self):
         """Return the current status of the room considering bookings and maintenance"""
-        if not self.is_available:
+        if not self.is_available_flag:
             return "Unavailable"
         if self.status != 'Available':
             return self.status
@@ -78,7 +72,7 @@ class Booking(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     total_price = db.Column(db.Float, nullable=True)
     check_in = db.relationship('CheckIn', backref='booking', uselist=False, cascade="all, delete-orphan")
-    invoice = db.relationship('Invoice', backref='booking', uselist=False)
+    invoice = db.relationship('Invoice', backref='booking', uselist=False, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"Booking('{self.start_date}', '{self.end_date}', '{self.status}')"
@@ -110,7 +104,7 @@ class CheckIn(db.Model):
     def __repr__(self):
         return f"CheckIn('{self.check_in_time}', '{self.status}')"
 
-class Invoice(db.Model):
+class Invoice(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     booking_id = db.Column(db.Integer, db.ForeignKey('booking.id'), nullable=False)
     invoice_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -120,6 +114,7 @@ class Invoice(db.Model):
     is_paid = db.Column(db.Boolean, default=False)
     payment_method = db.Column(db.String(50), nullable=True)
     payment_date = db.Column(db.DateTime, nullable=True)
+    public_id = db.Column(db.String(36), unique=True, default=lambda: str(uuid.uuid4()))
     invoice_items = db.relationship('InvoiceItem', backref='invoice', lazy=True)
     notes = db.Column(db.Text, nullable=True)
 

@@ -3,6 +3,7 @@ import os
 import sys
 import pathlib
 import subprocess
+from WebApp import create_app, db, login_manager
 
 def main():
     """Main entry point for setting up and running the application"""
@@ -14,7 +15,7 @@ def main():
     
     # Check if database exists, if not initialize it
     db_path = pathlib.Path('instance/site.db')
-    if not db_path.exists():
+    if not db_path.exists() and not os.environ.get('FLASK_TESTING'):
         print("Database not found. Running database initialization...")
         try:
             subprocess.run([sys.executable, 'init_db.py'], check=True)
@@ -30,7 +31,6 @@ def main():
     
     # Run the application
     print("\nStarting the application...")
-    from WebApp import create_app
     app = create_app()
     app.run(debug=True, host='0.0.0.0', port=5555)
 

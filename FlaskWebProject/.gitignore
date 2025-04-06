@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+env/
+env1/
+env2/
+env3/
+venv/
+ENV/
+
+# Flask stuff
+instance/
+.webassets-cache
+.env
+
+# Database files
+*.db
+*.sqlite
+
+# Logs
+logs/
+*.log
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosctache
+*.sln.docstates
+obj/
+
+# Unused project files
+FlaskWebProject.pyproj
+HotelGuruApp/

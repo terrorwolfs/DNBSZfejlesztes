@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField, TextAreaField, IntegerField, SelectField, FloatField, RadioField, DateTimeField, TimeField, DecimalField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Optional, NumberRange, URL
-from .models import User, ExtraService, Room, Booking
+from datetime import datetime, timedelta
+from WebApp.models import User, ExtraService, Room, Booking
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -57,6 +58,14 @@ class BookingForm(FlaskForm):
     end_date = StringField('Check-out Date (YYYY-MM-DD)', validators=[DataRequired()])
     submit = SubmitField('Book Room')
 
+    def validate_start_date(self, start_date):
+        try:
+            date = datetime.strptime(start_date.data, '%Y-%m-%d')
+            if date < datetime.now().replace(hour=0, minute=0, second=0, microsecond=0):
+                raise ValidationError('Start date cannot be in the past')
+        except ValueError:
+            raise ValidationError('Invalid date format. Please use YYYY-MM-DD')
+
 class RoomManagementForm(FlaskForm):
     room_number = IntegerField('Room Number', validators=[DataRequired()])
     room_type = StringField('Room Type', validators=[DataRequired()])
@@ -64,9 +73,9 @@ class RoomManagementForm(FlaskForm):
     price_per_night = FloatField('Price per Night', validators=[DataRequired()])
     description = TextAreaField('Description')
     status = SelectField('Status', choices=[('Available', 'Available'), ('Maintenance', 'Maintenance'), ('Cleaning', 'Cleaning')])
-    amenities = TextAreaField('Amenities (comma separated)')
+    amenities = TextAreaField('Amenities (comma separated)', validators=[Optional()])
     image_url = StringField('Image URL', validators=[URL()])
-    is_available = BooleanField('Available for Booking')
+    is_available_flag = BooleanField('Available for Booking')
     submit = SubmitField('Save Room')
 
 class ExtraServiceForm(FlaskForm):

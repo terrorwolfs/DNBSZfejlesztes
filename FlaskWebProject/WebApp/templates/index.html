@@ -8,23 +8,23 @@
             <p class="lead mb-5">Your ultimate destination for comfortable stays</p>
         </div>
         
-        {% if weather_data %}
+        {% if weather_data and weather_data.get('temp') %}
         <div class="col-md-4">
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Current Weather</h5>
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <img src="https://openweathermap.org/img/wn/{{ weather_data.icon }}@2x.png" alt="Weather icon">
-                        <div>
+                        <div class="ms-2">
                             <h2 class="mb-0">{{ weather_data.temp }}°C</h2>
-                            <p class="text-capitalize">{{ weather_data.description }}</p>
+                            <p class="text-capitalize">{{ weather_data.description|default('Weather information') }}</p>
                         </div>
                     </div>
                     <div class="mt-2">
-                        <p class="mb-1">Humidity: {{ weather_data.humidity }}%</p>
-                        <p class="mb-0">Wind: {{ weather_data.wind_speed }} m/s</p>
+                        <p class="mb-1">Humidity: {{ weather_data.humidity|default('N/A') }}%</p>
+                        <p class="mb-0">Wind: {{ weather_data.wind_speed|default('N/A') }} m/s</p>
                     </div>
                 </div>
             </div>
@@ -35,13 +35,13 @@
     <div class="row">
         {% for room in rooms %}
         <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/room_' ~ room.id ~ '.jpg') }}" class="card-img-top" alt="Room {{ room.room_number }}">
+            <div class="card h-100">
+                <img src="{{ room.image_url or url_for('static', filename='images/default_room.jpg') }}" class="card-img-top" alt="Room {{ room.room_number }}">
                 <div class="card-body">
                     <h5 class="card-title">Room {{ room.room_number }}</h5>
                     <p class="card-text">{{ room.room_type }}</p>
-                    <p class="card-text">{{ room.description }}</p>
-                    <p class="card-text">Price: ${{ room.price }} per night</p>
+                    <p class="card-text">{{ room.description|truncate(100) }}</p>
+                    <p class="card-text">Price: ${{ room.price_per_night }} per night</p>
                     <a href="{{ url_for('routes.room_detail', room_id=room.id) }}" class="btn btn-primary">View Details</a>
                 </div>
             </div>

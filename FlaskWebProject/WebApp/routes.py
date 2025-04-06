@@ -1,11 +1,12 @@
-from flask import render_template, url_for, flash, redirect, request, Blueprint, session, jsonify, abort
-from . import db
+from flask import render_template, url_for, flash, redirect, request, Blueprint, session, jsonify, abort, current_app
+from WebApp import db
 from datetime import datetime, timedelta
-from .api_keys import APIKeys
+import logging
+from WebApp.api_keys import APIKeys
 from WebApp.auth import get_current_user, login_required, admin_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from .forms import RegistrationForm, LoginForm, BookingForm, ProfileUpdateForm, ExtraServiceForm, RoomManagementForm, BookingManagementForm, CheckInForm, CheckOutForm, InvoiceForm, BookingStatusForm
-from .models import User, Room, Booking, ExtraService, BookingService, CheckIn, Invoice, InvoiceItem
+from WebApp.forms import RegistrationForm, LoginForm, BookingForm, ProfileUpdateForm, ExtraServiceForm, RoomManagementForm, BookingManagementForm, CheckInForm, CheckOutForm, InvoiceForm, BookingStatusForm
+from WebApp.models import User, Room, Booking, ExtraService, BookingService, CheckIn, Invoice, InvoiceItem
 import uuid
 
 routes = Blueprint('routes', __name__)
@@ -21,7 +22,14 @@ def index():
     """Home page showing available rooms"""
     current_user = get_current_user() 
     rooms = Room.query.all()
-    weather_data = get_weather_data()
+    
+    # Get weather data with error handling
+    try:
+        weather_data = get_weather_data() or {}
+    except Exception as e:
+        logging.error(f"Error fetching weather data: {e}")
+        weather_data = {}
+        
     return render_template('index.html', rooms=rooms, current_user=current_user, weather_data=weather_data)
 
 # Authentication routes
@@ -117,7 +125,7 @@ def book_room(room_id):
         end_date = datetime.strptime(form.end_date.data, '%Y-%m-%d') 
         
         # Check if room is available for these dates
-        if not room.is_available:
+        if not room.is_available(start_date, end_date):
             flash('Room is not available for these dates.', 'error')
             return render_template('booking.html', title='Book a Room', form=form, room=room, current_user=current_user)
         days = (end_date - start_date).days
@@ -234,7 +242,7 @@ def add_room():
             status=form.status.data,
             amenities=form.amenities.data,
             image_url=form.image_url.data,
-            is_available=form.is_available.data
+            is_available_flag=form.is_available_flag.data
         )
         db.session.add(room)
         db.session.commit()
@@ -263,9 +271,9 @@ def edit_room(room_id):
 def toggle_room_availability(room_id):
     """Toggle a room's availability status"""
     room = Room.query.get_or_404(room_id)
-    room.is_available = not room.is_available
+    room.is_available_flag = not room.is_available_flag
     db.session.commit()
-    flash(f'Room {room.room_number} is now {"available" if room.is_available else "unavailable"} for booking.', 'success')
+    flash(f'Room {room.room_number} is now {"available" if room.is_available_flag else "unavailable"} for booking.', 'success')
     return redirect(url_for('routes.manage_rooms'))
 
 # API routes
@@ -471,7 +479,7 @@ def create_invoice(booking_id):
     
     # Check if invoice already exists
     if booking.invoice:
-        flash('An invoice already exists for this booking.', 'info')
+        flash('An invoice already exists for this booking.', 'warning')
         return redirect(url_for('routes.view_invoice', invoice_id=booking.invoice.id))
         
     form = InvoiceForm()
@@ -533,7 +541,7 @@ def create_invoice(booking_id):
     current_user = get_current_user()
     return render_template('create_invoice.html', title='Create Invoice', form=form, booking=booking, current_user=current_user)
 
-@routes.route("/admin/invoice/<int:invoice_id>")
+@routes.route("/admin/invoice/<int:invoice_id>", methods=['GET'])
 @admin_required
 def view_invoice(invoice_id):
     """View an invoice"""
@@ -555,7 +563,7 @@ def mark_invoice_paid(invoice_id):
     flash(f'Invoice #{invoice.id} has been marked as paid!', 'success')
     return redirect(url_for('routes.view_invoice', invoice_id=invoice.id))
 
-@routes.route("/invoice/<int:public_id>")
+@routes.route("/invoice/<string:public_id>")
 def public_invoice(public_id):
     """Public view of an invoice (accessible without login)"""
     invoice = Invoice.query.filter_by(public_id=public_id).first_or_404()
@@ -572,8 +580,9 @@ def room_status_dashboard():
 # API integrations
 def get_weather_data():
     """Get current weather data for the hotel location"""
-    weather_api_key = APIKeys.get_key('WEATHER_API_KEY')
+    weather_api_key = APIKeys.weather_api_key()
     if not weather_api_key:
+        logging.warning("Weather API key not configured or invalid")
         return None
     
     try:
@@ -581,21 +590,27 @@ def get_weather_data():
         lat = 40.7128
         lon = -74.0060
         
-        url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={weather_api_key}&units=metric"
-        response = requests.get(url)
+        url = f"https://api.openweathermap.org/data/2.5/weather"
+        params = {
+            'lat': lat,
+            'lon': lon,
+            'appid': weather_api_key,
+            'units': 'metric'
+        }
+        response = requests.get(url, params=params, timeout=5)
         
         if response.status_code == 200:
             data = response.json()
             weather = {
-                'temp': data['main']['temp'],
-                'description': data['weather'][0]['description'],
-                'icon': data['weather'][0]['icon'],
-                'humidity': data['main']['humidity'],
-                'wind_speed': data['wind']['speed']
+                'temp': data.get('main', {}).get('temp', 'N/A'),
+                'description': data.get('weather', [{}])[0].get('description', 'N/A'),
+                'icon': data.get('weather', [{}])[0].get('icon', '01d'),
+                'humidity': data.get('main', {}).get('humidity', 'N/A'),
+                'wind_speed': data.get('wind', {}).get('speed', 'N/A')
             }
             return weather
     except Exception as e:
-        print(f"Error fetching weather data: {e}")
+        logging.error(f"Error fetching weather data: {e}")
     
     return None
 
@@ -604,8 +619,8 @@ def get_weather_data():
 def create_checkout_session(invoice_id):
     """Create a Stripe checkout session for an invoice"""
     stripe_api_key = APIKeys.stripe_api_key()
-    if not stripe_api_key:
-        return jsonify({'error': 'Stripe API key not configured'}), 500
+    if not stripe_api_key or stripe_api_key.startswith(('your-', 'sk_test_')):
+        return jsonify({'error': 'Stripe API key not configured or invalid'}), 500
     
     try:
         import stripe
@@ -640,6 +655,7 @@ def create_checkout_session(invoice_id):
         
         return jsonify({'id': checkout_session.id})
     except Exception as e:
+        logging.error(f"Error creating Stripe checkout session: {e}")
         return jsonify({'error': str(e)}), 500
 
 @routes.route('/payment/success/<int:invoice_id>')

@@ -1,6 +1,11 @@
 from flask import redirect, url_for, session, flash, abort, request
 from functools import wraps
-from .models import User
+from WebApp.models import User
+from WebApp import login_manager
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 def login_required(f):
     @wraps(f)
