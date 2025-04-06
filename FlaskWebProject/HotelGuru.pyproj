@@ -7,7 +7,7 @@
     <ProjectHome>
     </ProjectHome>
     <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
-    <StartupFile>WebApp\app.py</StartupFile>
+    <StartupFile>HotelGuruApp\app.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -18,7 +18,7 @@
     <Name>HotelGuru</Name>
     <RootNamespace>FlaskWebProject</RootNamespace>
     <WebBrowserPort>5555</WebBrowserPort>
-    <InterpreterId>MSBuild|env3|$(MSBuildProjectFullPath)</InterpreterId>
+    <InterpreterId>MSBuild|env11|$(MSBuildProjectFullPath)</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,61 +29,59 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="app.py" />
-    <Compile Include="setup_db.py" />
-    <Compile Include="run.py" />
-    <Compile Include="WebApp\__init__.py" />
-    <Compile Include="WebApp\auth.py" />
-    <Compile Include="WebApp\forms.py" />
-    <Compile Include="WebApp\models.py" />
-    <Compile Include="WebApp\routes.py" />
+    <Compile Include="HotelGuruApp\app.py" />
+    <Compile Include="HotelGuruApp\config.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HotelGuruApp\app\models\models.py" />
+    <Compile Include="HotelGuruApp\forms.py" />
+    <Compile Include="HotelGuruApp\app\main\routes.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HotelGuruApp\app\__init__.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="WebApp\" />
-    <Folder Include="WebApp\templates\" />
-    <Folder Include="instance\" />
-    <Folder Include="migrations\" />
-    <Folder Include="logs\" />
+    <Folder Include="HotelGuruApp\" />
+    <Folder Include="HotelGuruApp\app\" />
+    <Folder Include="HotelGuruApp\app\main\" />
+    <Folder Include="HotelGuruApp\app\models\" />
+    <Folder Include="HotelGuruApp\app\templates\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="HotelGuruApp\config.ini">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="requirements.txt" />
-    <Content Include="WebApp\templates\account.html" />
-    <Content Include="WebApp\templates\admin.html" />
-    <Content Include="WebApp\templates\base.html" />
-    <Content Include="WebApp\templates\booking.html" />
-    <Content Include="WebApp\templates\booking_detail.html" />
-    <Content Include="WebApp\templates\checkin.html" />
-    <Content Include="WebApp\templates\checkin_form.html" />
-    <Content Include="WebApp\templates\checkin_list.html" />
-    <Content Include="WebApp\templates\checkout.html" />
-    <Content Include="WebApp\templates\checkout_form.html" />
-    <Content Include="WebApp\templates\create_invoice.html" />
-    <Content Include="WebApp\templates\edit_booking.html" />
-    <Content Include="WebApp\templates\extra_services.html" />
-    <Content Include="WebApp\templates\footer.html" />
-    <Content Include="WebApp\templates\index.html" />
-    <Content Include="WebApp\templates\invoice.html" />
-    <Content Include="WebApp\templates\invoices.html" />
-    <Content Include="WebApp\templates\login.html" />
-    <Content Include="WebApp\templates\manage_booking.html" />
-    <Content Include="WebApp\templates\manage_bookings.html" />
-    <Content Include="WebApp\templates\manage_checkins.html" />
-    <Content Include="WebApp\templates\manage_invoices.html" />
-    <Content Include="WebApp\templates\manage_rooms.html" />
-    <Content Include="WebApp\templates\register.html" />
-    <Content Include="WebApp\templates\request_service.html" />
-    <Content Include="WebApp\templates\room_detail.html" />
-    <Content Include="WebApp\templates\room_form.html" />
-    <Content Include="WebApp\templates\room_status.html" />
-    <Content Include="WebApp\templates\rooms.html" />
-    <Content Include="WebApp\templates\users.html" />
-    <Content Include="WebApp\templates\view_invoice.html" />
+    <Content Include="HotelGuruApp\app\templates\account.html" />
+    <Content Include="HotelGuruApp\app\templates\admin.html" />
+    <Content Include="HotelGuruApp\app\templates\base.html" />
+    <Content Include="HotelGuruApp\app\templates\booking.html" />
+    <Content Include="HotelGuruApp\app\templates\checkin.html" />
+    <Content Include="HotelGuruApp\app\templates\extra_services.html" />
+    <Content Include="HotelGuruApp\app\templates\footer.html" />
+    <Content Include="HotelGuruApp\app\templates\index.html" />
+    <Content Include="HotelGuruApp\app\templates\invoices.html" />
+    <Content Include="HotelGuruApp\app\templates\login.html" />
+    <Content Include="HotelGuruApp\app\templates\register.html" />
+    <Content Include="HotelGuruApp\app\templates\rooms.html" />
+    <Content Include="HotelGuruApp\app\templates\users.html" />
   </ItemGroup>
   <ItemGroup>
-    <Interpreter Include="env3\">
-      <Id>env3</Id>
+    <Interpreter Include="env1\">
+      <Id>env1</Id>
       <Version>3.11</Version>
-      <Description>env3 (Python 3.11 (64-bit))</Description>
+      <Description>env1 (Python 3.11 (64-bit))</Description>
+      <InterpreterPath>Scripts\python.exe</InterpreterPath>
+      <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
+      <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
+      <Architecture>X64</Architecture>
+    </Interpreter>
+    <Interpreter Include="env1\">
+      <Id>env11</Id>
+      <Version>3.11</Version>
+      <Description>env1 (Python 3.11 (64-bit))</Description>
       <InterpreterPath>Scripts\python.exe</InterpreterPath>
       <WindowsInterpreterPath>Scripts\pythonw.exe</WindowsInterpreterPath>
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
@@ -91,6 +89,8 @@
     </Interpreter>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
+  <!-- Specify pre- and post-build commands in the BeforeBuild and 
+       AfterBuild targets below. -->
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">

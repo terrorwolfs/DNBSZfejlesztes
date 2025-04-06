@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from config import config
+from config import Config
 import logging
 from logging.handlers import RotatingFileHandler
 import os
@@ -11,7 +12,7 @@ migrate = Migrate()
 
 def create_app(config_name='default'):
     app = Flask(__name__)
-    app.config.from_object(config[config_name])
+    app.config.from_object(Config)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -28,6 +29,6 @@ def create_app(config_name='default'):
         app.logger.setLevel(logging.INFO)
         app.logger.info('Hotel startup')
 
-    from .routes import routes
+    from app.main.routes import routes
     app.register_blueprint(routes)
     return app

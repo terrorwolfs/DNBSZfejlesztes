@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import session, redirect, url_for, flash, abort
-from .models import User
+from models import User
 
 def login_required(f):
     @wraps(f)

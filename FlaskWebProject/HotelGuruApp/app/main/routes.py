@@ -1,10 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint, session
-from WebApp import db
+from app import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-from .forms import RegistrationForm, LoginForm, BookingForm
-from .models import User, Room, Booking
-from .auth import login_required, admin_required
+from forms import RegistrationForm, LoginForm, BookingForm
+from models import User, Room, Booking
+from auth import login_required, admin_required
 
 routes = Blueprint('routes', __name__)
 

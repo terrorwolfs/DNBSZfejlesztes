@@ -1,6 +1,6 @@
 from datetime import datetime
-from . import db
-from sqlalchemy.orm import validates
+from app import db
+from sqlalchemy.orm import validates 
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,12 +30,10 @@ class Booking(db.Model):
 
     @validates('start_date', 'end_date')
     def validate_dates(self, key, date):
-        if key == 'start_date':
-            if date > self.end_date:
-                raise ValueError('Start date must be before end date')
-        if key == 'end_date':
-            if date < self.start_date:
-                raise ValueError('End date must be after start date')
+        if key == 'start_date' and self.end_date and date > self.end_date:
+            raise ValueError('Start date must be before end date')
+        if key == 'end_date' and self.start_date and date < self.start_date:
+            raise ValueError('End date must be after start date')
         return date
 
     def __repr__(self):
