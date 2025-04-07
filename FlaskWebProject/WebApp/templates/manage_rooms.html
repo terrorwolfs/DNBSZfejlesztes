@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Manage Rooms{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Room Management</h1>
+        <a href="{{ url_for('routes.add_room') }}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Add New Room
+        </a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Room #</th>
+                    <th>Type</th>
+                    <th>Capacity</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in rooms %}
+                <tr>
+                    <td>{{ room.room_number }}</td>
+                    <td>{{ room.room_type }}</td>
+                    <td>{{ room.capacity }}</td>
+                    <td>${{ room.price_per_night }}</td>
+                    <td>
+                        <span class="badge bg-{{ 'success' if room.is_available else 'danger' }}">
+                            {{ room.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="{{ url_for('routes.edit_room', room_id=room.id) }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <form method="POST" action="{{ url_for('routes.toggle_room_availability', room_id=room.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-{{ 'warning' if room.is_available else 'success' }}">
+                                    <i class="fas fa-{{ 'times' if room.is_available else 'check' }}"></i> 
+                                    {{ 'Disable' if room.is_available else 'Enable' }}
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('routes.delete_room', room_id=room.id) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this room?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{ url_for('routes.admin') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Admin Panel
+        </a>
+    </div>
+</div>
+{% endblock %}

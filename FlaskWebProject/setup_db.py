@@ -1,34 +1,40 @@
 import os
-import pathlib
 import sys
-from WebApp import create_app, db, login_manager
-from WebApp.models import User, Room, Booking, ExtraService, CheckIn, Invoice
+import pathlib
+import shutil
+from flask import Flask
+from WebApp import db, create_app
+from WebApp.models import User, Room, Booking, ExtraService, CheckIn, Invoice, InvoiceItem
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
 
-def init_db():
-    # Set environment variable to indicate we're initializing the database
-    os.environ['FLASK_INITIALIZING'] = 'true'
-    
-    """Initialize the database with sample data"""
-    print("Initializing database...")
+def setup_database():
+    """Set up the database with initial data"""
+    print("Setting up the database...")
     
     # Create instance directory if it doesn't exist
     instance_path = pathlib.Path('instance')
     instance_path.mkdir(exist_ok=True)
+
+    # Check if site.db exists and rename it to backup if it does
+    db_path = instance_path / 'site.db'
+    if db_path.exists():
+        backup_path = instance_path / 'site.db.backup'
+        print(f"Existing database found. Creating backup at {backup_path}")
+        try:
+            shutil.copy2(db_path, backup_path)
+            # Remove the existing database to create a fresh one
+            os.remove(db_path)
+            print("Removed existing database to create a fresh one.")
+        except Exception as e:
+            print(f"Error backing up database: {e}")
     
+    # Create the Flask application
     app = create_app()
     
-    # Check if database file exists and warn user
-    db_path = os.path.join(app.instance_path, 'site.db')
-    if os.path.exists(db_path):
-        print(f"Warning: Database already exists at {db_path}")
-        print("This will overwrite your existing database. Press Ctrl+C to cancel or Enter to continue...")
-        input()
-    
-    # Create database tables and seed with initial data
     with app.app_context():
         # Create all tables
+        print("Creating database tables...")
         db.create_all()
         
         # Check if we need to seed the database
@@ -81,17 +87,13 @@ def init_db():
                 db.session.add(room)
             for service in services:
                 db.session.add(service)
+            
             db.session.commit()
             print("Database seeded successfully!")
         else:
             print("Database already contains data, skipping seed.")
-    
-    # Unset initialization flag
-    os.environ.pop('FLASK_INITIALIZING', None)
-    
-    print("\nDatabase initialization complete!")
-    print("You can now run the application with: python run.py")
-    return 0
+        
+        print("Database setup complete!")
 
 if __name__ == '__main__':
-    sys.exit(init_db())
+    setup_database()

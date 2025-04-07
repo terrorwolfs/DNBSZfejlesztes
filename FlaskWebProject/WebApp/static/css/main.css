@@ -1,0 +1,68 @@
+/* Main CSS file for HotelGuru */
+
+/* Global styles */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+}
+
+.content {
+    flex: 1;
+    padding: 2rem 0;
+}
+
+footer {
+    margin-top: auto;
+    padding: 1.5rem 0;
+    background-color: #f8f9fa;
+}
+
+/* Navbar styling */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Card styling */
+.card {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+/* Room cards */
+.room-card {
+    height: 100%;
+}
+
+.room-card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Form styling */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Button styling */
+.btn {
+    border-radius: 4px;
+}
+
+/* Admin dashboard */
+.dashboard-card {
+    text-align: center;
+    padding: 1.5rem;
+}

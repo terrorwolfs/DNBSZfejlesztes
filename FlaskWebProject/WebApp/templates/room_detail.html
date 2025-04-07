@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Room {{ room.room_number }}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            {% if room.image_url %}
+            <img src="{{ room.image_url }}" class="img-fluid rounded" alt="Room {{ room.room_number }}">
+            {% else %}
+            <img src="https://via.placeholder.com/600x400?text=Room+{{ room.room_number }}" class="img-fluid rounded" alt="Room {{ room.room_number }}">
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <h1>Room {{ room.room_number }}</h1>
+            <h4 class="text-muted">{{ room.room_type }}</h4>
+            
+            <div class="my-4">
+                <h5>Description</h5>
+                <p>{{ room.description or 'No description available.' }}</p>
+            </div>
+            
+            <div class="my-4">
+                <h5>Amenities</h5>
+                {% if room.amenities %}
+                <ul>
+                    {% for amenity in room.amenities.split(',') %}
+                    <li>{{ amenity.strip() }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p>No amenities listed.</p>
+                {% endif %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Details</h5>
+
+                        <form method="get" class="mb-3">
+                            <label for="currency" class="form-label">Choose currency:</label>
+                            <select name="currency" id="currency" class="form-select w-auto d-inline" onchange="this.form.submit()">
+                                <option value="EUR" {% if selected_currency=='EUR' %}selected{% endif %}>EUR</option>
+                                <option value="USD" {% if selected_currency=='USD' %}selected{% endif %}>USD</option>
+                                <option value="GBP" {% if selected_currency=='GBP' %}selected{% endif %}>GBP</option>
+                                <option value="HUF" {% if selected_currency=='HUF' %}selected{% endif %}>HUF</option>
+                            </select>
+                        </form>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Capacity: {{ room.capacity }} persons</li>
+                            <li class="list-group-item">Price: {{ price }} {{ selected_currency }} per night</li>
+                        </ul>
+                    </div>
+                </div>
+            
+            <!-- Map integration -->
+            <!--<div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Location</h5>
+                    <div id="map" style="height: 300px; width: 100%;"></div>
+                    <small class="text-muted">Map powered by Google Maps</small>
+                </div>
+            </div>-->
+            
+            <div class="d-grid gap-2">
+                {% if session.get('user_id') %}
+                <a href="{{ url_for('routes.book_room', room_id=room.id) }}" class="btn btn-primary btn-lg">Book Now</a>
+                {% else %}
+                <a href="{{ url_for('routes.login') }}" class="btn btn-primary btn-lg">Login to Book</a>
+                {% endif %}
+                <a href="{{ url_for('routes.rooms') }}" class="btn btn-outline-secondary">Back to Rooms</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="map-error" class="alert alert-warning mt-3" style="display: none;">
+    <strong>Note:</strong> The map could not be loaded. Please try again later.
+</div>
+
+<!--<script>
+    let mapInitialized = false;
+    
+    function initMap() {
+        try {
+            // Hotel coordinates (example: New York City)
+            const hotelLocation = { lat: 40.7128, lng: -74.0060 };
+            
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: hotelLocation,
+            });
+            
+            const marker = new google.maps.Marker({
+                position: hotelLocation,
+                map: map,
+                title: "HotelGuru"
+            });
+            
+            mapInitialized = true;
+        } catch (e) {
+            console.error("Error initializing map:", e);
+            document.getElementById("map-error").style.display = "block";
+        }
+    }
+    
+    function handleMapError() {
+        if (!mapInitialized) {
+            console.error("Google Maps failed to load");
+            document.getElementById("map-error").style.display = "block";
+        }
+    }
+</script>-->
+<!--{% if maps_api_key %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ maps_api_key }}&callback=initMap&v=weekly" defer onerror="handleMapError()"></script>
+{% else %}
+<script>document.getElementById("map-error").style.display = "block";</script>-->
+{% endif %}
+{% endblock %}

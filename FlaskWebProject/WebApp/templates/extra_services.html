@@ -1,15 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Extra Services</title>
-</head>
-<body>
-    <h1>Extra Services</h1>
-    <ul>
+{% extends "base.html" %}
+{% block title %}Extra Services{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-4">Extra Services</h1>
+    <p class="text-center mb-5">Enhance your stay with our premium services</p>
+    
+    <div class="row">
         {% for service in services %}
-        <li>{{ service.name }} - ${{ service.price }}</li>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ service.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">${{ service.price }}</h6>
+                    <p class="card-text">{{ service.description }}</p>
+                    {% if current_user %}
+                    <a href="{{ url_for('routes.user_bookings_api') }}" class="btn btn-primary request-service" data-service-id="{{ service.id }}">Request Service</a>
+                    {% else %}
+                    <a href="{{ url_for('routes.login') }}" class="btn btn-outline-primary">Login to Request</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-</body>
-</html>
+    </div>
+    
+    {% if current_user %}
+    <!-- Modal for selecting booking -->
+    <div class="modal fade" id="bookingSelectModal" tabindex="-1" aria-labelledby="bookingSelectModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingSelectModalLabel">Select Booking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please select which booking you would like to add this service to:</p>
+                    <div id="bookingsList" class="list-group">
+                        <!-- Bookings will be loaded here via JavaScript -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const requestButtons = document.querySelectorAll('.request-service');
+            const bookingsList = document.getElementById('bookingsList');
+            const bookingModal = new bootstrap.Modal(document.getElementById('bookingSelectModal'));
+            
+            requestButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const serviceId = this.dataset.serviceId;
+                    
+                    // Fetch user's active bookings
+                    fetch('{{ url_for("routes.user_bookings_api") }}')
+                        .then(response => response.json())
+                        .then(bookings => {
+                            // Clear previous bookings
+                            bookingsList.innerHTML = '';
+                            
+                            if (bookings.length === 0) {
+                                bookingsList.innerHTML = '<div class="alert alert-info">You don\'t have any active bookings. Please make a booking first.</div>';
+                            } else {
+                                // Create a button for each booking
+                                bookings.forEach(booking => {
+                                    const a = document.createElement('a');
+                                    a.href = `{{ url_for('routes.request_service', booking_id=0) }}`.replace('0', booking.id);
+                                    a.className = 'list-group-item list-group-item-action';
+                                    a.innerHTML = `Room ${booking.room_number} (${booking.dates})`;
+                                    bookingsList.appendChild(a);
+                                });
+                            }
+                            
+                            // Show the modal
+                            bookingModal.show();
+                        })
+                        .catch(error => {
+                            console.error('Error fetching bookings:', error);
+                            alert('There was an error loading your bookings. Please try again later.');
+                        });
+                });
+            });
+        });
+    </script>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Manage Booking{% endblock %}
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Manage Booking #{{ booking.id }}</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Booking Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Guest:</strong> {{ booking.customer.username }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Email:</strong> {{ booking.customer.email }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Room:</strong> {{ booking.room.room_number }} ({{ booking.room.room_type }})
+                    </div>
+                    <div class="mb-3">
+                        <strong>Check-in:</strong> {{ booking.start_date.strftime('%Y-%m-%d') }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Check-out:</strong> {{ booking.end_date.strftime('%Y-%m-%d') }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Nights:</strong> {{ booking.calculate_nights(booking.start_date, booking.end_date) }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Total Price:</strong> ${{ booking.total_price }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Booking Date:</strong> {{ booking.created_at.strftime('%Y-%m-%d %H:%M') }}
+                    </div>
+                    <div class="mb-3">
+                        <strong>Status:</strong> 
+                        <span class="badge bg-{{ 'success' if booking.status == 'Confirmed' else 'warning' if booking.status == 'Pending' else 'danger' if booking.status == 'Cancelled' else 'info' if booking.status == 'Completed' else '' }}">
+                            {{ booking.status }}
+                        </span>
+                        {% if booking.check_in %}
+                        <span class="badge bg-primary ms-1">Checked In</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Update Booking</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            {{ form.status.label(class="form-label") }}
+                            {{ form.status(class="form-select") }}
+                            {% for error in form.status.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.start_date.label(class="form-label") }}
+                            {{ form.start_date(class="form-control", type="date") }}
+                            {% for error in form.start_date.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.end_date.label(class="form-label") }}
+                            {{ form.end_date(class="form-control", type="date") }}
+                            {% for error in form.end_date.errors %}
+                                <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {{ form.notes.label(class="form-label") }}
+                            {{ form.notes(class="form-control", rows=3) }}
+                        </div>
+                        <div class="d-grid">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Extra Services</h5>
+                </div>
+                <div class="card-body">
+                    {% if booking.services %}
+                    <ul class="list-group">
+                        {% for booking_service in booking.services %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ booking_service.service.name }}
+                            <span>
+                                {{ booking_service.quantity }} x ${{ booking_service.service.price }} = 
+                                <strong>${{ booking_service.total_price }}</strong>
+                            </span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted">No extra services requested.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+                {% if booking.status == 'Confirmed' and not booking.check_in %}
+                <a href="{{ url_for('routes.checkin_guest', booking_id=booking.id) }}" class="btn btn-success">
+                    <i class="fas fa-sign-in-alt"></i> Process Check-In
+                </a>
+                {% elif booking.status == 'Completed' and booking.check_in %}
+                <a href="{{ url_for('routes.checkout_guest', checkin_id=booking.check_in.id) }}" class="btn btn-info">
+                    <i class="fas fa-sign-out-alt"></i> Process Check-Out
+                </a>
+                {% endif %}
+                
+                {% if booking.invoice %}
+                <a href="{{ url_for('routes.view_invoice', invoice_id=booking.invoice.id) }}" class="btn btn-secondary">
+                    <i class="fas fa-file-invoice-dollar"></i> View Invoice
+                </a>
+                {% else %}
+                <a href="{{ url_for('routes.create_invoice', booking_id=booking.id) }}" class="btn btn-outline-primary">
+                    <i class="fas fa-file-invoice"></i> Generate Invoice
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{{ url_for('routes.manage_bookings') }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Bookings
+        </a>
+    </div>
+</div>
+{% endblock %}
